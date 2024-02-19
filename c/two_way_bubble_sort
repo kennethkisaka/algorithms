@@ -18,7 +18,7 @@ int main() {
             a = -1;
         }
 
-        if (y[z-1] > y[z]) {
+        if (y[z-1] > y[z] && z >= centre) {
             int x = y[z];
             int w = y[z-1];
             
