@@ -7,7 +7,7 @@ int main() {
     int centre = (array_size - 1) / 2;
     for (int a = 0; a < z; a++) {
         
-        if (y[a] > y[a+1] && a < centre) {
+        if (y[a] > y[a+1] && a <= centre) {
             
             int b = y[a];
             int c = y[a+1];
