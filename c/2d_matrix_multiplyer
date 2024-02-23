@@ -1,88 +1,61 @@
-// Hello world! Cplayground is an online sandbox that makes it easy to try out
-// code.
-
 #include <stdio.h>
 #include <stdlib.h>
 
 int main() {
+    int m[2][3] = {{1,2,3},{4,5,6}};        //matrix 1
+    int n[3][2] = {{1,1},{2,2},{3,3}};        //matrix 2
     
-    int m[3][3] = {{1,2,3},{4,5,6},{7,8,9}};        //matrix 1
-    int n[3][3] = {{1,1,1},{2,2,2},{3,3,3}};        //matrix 2
+    //number of rows and columns of m.Also number of elements
+    int rows_one = sizeof(m) / sizeof(m[0]);
     
-    int size_one = sizeof(m) / sizeof(m[0][0]); //Contains the buffer size value of flat_array_two
-    int size_two = sizeof(m) / sizeof(m[0][0]); //Contains the buffer size value of flat_array_two
-    //printf("%d \n", size_one);
-    //printf("%d \n", size_two);
+    //number of rows and columns of n
+    int rows_two = sizeof(n) / sizeof(n[0]);
+    int columns_two = sizeof(n[0]) / sizeof(n[0][0]);
     
-    int flat_array_one[size_one]; //Shall store the flattened array m.
-    int flat_array_two[size_two]; //Shall store the flattened array n.
+    //RESULT MATRIX
+    //length of result matrix shall be influenced by rows_one * columns_two
+    int final_results[rows_one][columns_two];
+    int stage_results = 0;
+    int ro = 0;
     
-    //Flat array one loop
-    //r stands for rows, c stands for columns
-    /*How the loop below flattens the matrix
-    [a,b,c]
-    [d,e,f]     => a,b,c,d,e,f,g,h,i
-    [g,h,i]
-    Inshort it flattens horizontally
-    */
-    for (int r = 0,c = 0,i = 0; i < size_one ; c++, i++) {
-        if (c < sizeof(m[0])){
-            flat_array_one[i] = m[r][c];//[r][c]
-            //printf("one %d \n", flat_array_one[i]);
-        } else if (c == sizeof(m[0])) {
-            c = 0;//c
-            r++;//r++
-            flat_array_one[i] = m[r][c];//[c][r]
-            //printf("one %d \n\n", flat_array_one[i]);
-        }
-             
-    }
-    
-    //Flat array two loop
-    //r stands for rows, c stands for columns
-    /*How the loop below flattens the matrix
-    [j,k,l]
-    [m,n,o]     => j,m,p,k,n,q,l,o,r
-    [p,q,r]
-    Inshort it flattens verticaly
-    */
-    for (int r = 0, c = 0, i = 0; i < size_two; r++, i++) {
-        if (r < sizeof(n) / sizeof(n[0])) { //r
-            flat_array_two[i] = n[r][c]; //[r][c]
-            //printf("\ncolomn: %d row: %d i: %d", r, c, i);
-            //printf("two %d \n", flat_array_two[i]);
-        } else if (r == sizeof(n) / sizeof(n[0])) {
-            c++;
-            r = 0;
-            flat_array_two[i] = n[r][c];
-            //printf("colomn: %d row: %d i: %d ", r, c, i);
-            //printf(" two %d \n", flat_array_two[i]);
-        }
-    }
-    
-    for (int i = 0; i < size_one; i++){
-        printf("%d, ", flat_array_one[i]);
-        
-    }
-    
-    puts("\ndone\n");
-    
-    for (int i = 0; i < size_two; i++){
-        printf("%d, ", flat_array_two[i]);
-    }
-    
-    int stage_result = 0;
-    //final_result[r][c] where r: rows, c: columns
-    int final_result[sizeof(m[0])][sizeof(n) / sizeof(n[0])];
-    
-    for (int r = 0, i = 0; i < size_one; r++, i++ ) {
-        for (int c = 0, step = 0; c < sizeof(flat_array_two); c++) {
-            if (c % sizeof(n) / sizeof(n[0]) != 0) {
-                stage_result += flat_array_one[i] * flat_array_two[i];
-            } else if (c % sizeof(n) / sizeof(n[0]) == 0) {
-                //r : r / sizeof(m[0])
-                //c : c / sizeof(n) / sizeof(n[0]))
+    for (int rt = 0, ct = 0, i = 0; ro < rows_one; rt++) { //the loop shall be executed as long as we have not read the whole column
+        //go through each column
+        //after going through each row
+        i++;
+        //printf("rt : %d \n", rt);
+        if (rt < rows_two) {
+            //use this rt and ct to find the element
+            stage_results += m[ro][rt] * n[rt][ct];
+        } else if (rt == rows_two) {
+            //append stage results to final results by using ro and ct
+            final_results[ro][ct] = stage_results;
+            stage_results = 0;
+            //move to next column
+            ct++;
+            //rt should be reset to 0 so as to start from first row of this new column
+            rt = 0;
+            //dont forget to find element by this rt and ct
+
+            if (ct == columns_two) {
+            //printf("Fucking if\n");
+            ct = 0;
+            ro++;
             }
+
+            stage_results += m[ro][rt] * n[rt][ct]; //NB
+            //rt = -1;
+            
         }
     }
+        
+    for (int r = 0, c = 0; r < rows_one; c++) {
+        if (c < rows_one) {
+            printf("%d ", final_results[r][c]);
+        } else if (c == rows_one) {
+            c = -1;
+            r++;
+            printf("\n");
+        }
+    }
+    return 0;
 }
